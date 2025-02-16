@@ -1,7 +1,9 @@
 import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
-import numpy as np
+from matplotlib.colors import ListedColormap
 
 # Загружаем датасет
 dataset = pd.read_csv('gnb1.csv')
@@ -11,6 +13,21 @@ y = dataset['Bought Iphone 14']
 # Разбиваем на обучающую и тестовую выборки
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
+print("X_train")
+print(X_train)
+print("===========================================================")
+
+print("y_train")
+print(y_train)
+print("===========================================================")
+
+print("X_test")
+print(X_test)
+print("===========================================================")
+
+print("y_test")
+print(y_test)
+print("===========================================================")
 
 # Реализация OneR Classifier
 class OneRClassifier:
@@ -90,3 +107,51 @@ print("===========================================================")
 report = classification_report(y_test, y_pred)
 print("Classification Report:\n", report)
 print("===========================================================")
+
+
+X_set, y_set = X_train, y_train
+X1, X2 = np.meshgrid(np.arange(start = X_set['Age'].min() - 10, stop = X_set['Age'].max() + 10, step = 0.25),
+                     np.arange(start = X_set['Salary'].min() - 1000, stop = X_set['Salary'].max() + 1000, step = 0.25))
+
+# Получаем предсказания для сетки
+grid_points = np.array([X1.ravel(), X2.ravel()]).T
+predictions = one_r.predict(pd.DataFrame(grid_points, columns=['Age', 'Salary']))
+
+# Отображаем контуры решения
+plt.contourf(X1, X2, np.array(predictions).reshape(X1.shape), alpha=0.75, cmap=ListedColormap(('red', 'green')))
+plt.xlim(X1.min(), X1.max())
+plt.ylim(X2.min(), X2.max())
+
+# Отображаем обучающие точки
+for i, j in enumerate(np.unique(y_set)):
+    plt.scatter(X_set['Age'][y_set == j], X_set['Salary'][y_set == j], c=ListedColormap(('red', 'green'))(i), label=j)
+
+plt.title('OneR (Training set)')
+plt.xlabel('Age')
+plt.ylabel('Salary')
+plt.legend()
+plt.show()
+
+# Визуализация результатов на тестовом наборе данных
+X_set, y_set = X_test, y_test
+X1, X2 = np.meshgrid(np.arange(start = X_set['Age'].min() - 10, stop = X_set['Age'].max() + 10, step = 0.25),
+                     np.arange(start = X_set['Salary'].min() - 1000, stop = X_set['Salary'].max() + 1000, step = 0.25))
+
+# Получаем предсказания для сетки
+grid_points = np.array([X1.ravel(), X2.ravel()]).T
+predictions = one_r.predict(pd.DataFrame(grid_points, columns=['Age', 'Salary']))
+
+# Отображаем контуры решения
+plt.contourf(X1, X2, np.array(predictions).reshape(X1.shape), alpha=0.75, cmap=ListedColormap(('red', 'green')))
+plt.xlim(X1.min(), X1.max())
+plt.ylim(X2.min(), X2.max())
+
+# Отображаем тестовые точки
+for i, j in enumerate(np.unique(y_set)):
+    plt.scatter(X_set['Age'][y_set == j], X_set['Salary'][y_set == j], c=ListedColormap(('red', 'green'))(i), label=j)
+
+plt.title('OneR (Test set)')
+plt.xlabel('Age')
+plt.ylabel('Salary')
+plt.legend()
+plt.show()
