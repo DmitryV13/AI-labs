@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 
 # Параметры нормального распределения
-age_mean, age_std = 45, 5
+age_mean, age_std = 45, 3
 salary_mean, salary_std = 50000, 5000
 
 # Генерация данных
@@ -11,7 +11,7 @@ ages = np.random.normal(age_mean, age_std, 100)
 salaries = np.random.normal(salary_mean, salary_std, 100)
 
 # Ограничение значений
-ages = np.clip(ages, 20, 70).astype(int)
+ages = np.clip(ages, 30, 50).astype(int)
 salaries = np.clip(salaries, 25000, 75000).astype(int)
 
 # Генерация целевой переменной (Bought Iphone 14)
@@ -27,4 +27,4 @@ data = pd.DataFrame({
 })
 
 # Сохранение в CSV
-data.to_csv('gnb1.csv', index=False)
+data.to_csv('gnb2.csv', index=False)

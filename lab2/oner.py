@@ -18,6 +18,7 @@ class OneRClassifier:
         self.rules = {}
         self.feature = None
 
+# Вычисление лучшего признака
     def fit(self, X, y):
         best_feature = None
         best_accuracy = -1
@@ -35,11 +36,16 @@ class OneRClassifier:
         self.feature = best_feature
         self.rules = best_rule
 
+    # если значение отсутствует возвращаем наиболее частую этикетку
     def predict(self, X):
         if self.feature not in X.columns:
             raise ValueError(f"Feature '{self.feature}' not found in input data")
-        return X[self.feature].apply(lambda x: self.rules.get(x, 0))
 
+        most_common_label = max(set(self.rules.values()), key=list(self.rules.values()).count)
+
+        return X[self.feature].apply(lambda x: self.rules.get(x, most_common_label))
+
+    # Создание правила
     def _create_rule(self, feature, target):
         rule = {}
         for value in feature.unique():
@@ -72,11 +78,15 @@ print(f"Точность модели: {accuracy:.2f}")
 print("===========================================================")
 
 # Вычисляем confusion matrix
+# предсказано | не купил  |  купил
+# ------------|-------------------------------
+# не купил    | правильно |  ошибся
+# купил       | ошибся    |  правильно
 cm = confusion_matrix(y_test, y_pred)
 print("Confusion Matrix:\n", cm)
 print("===========================================================")
 
 # Вычисляем precision, recall, f1-score
-report = classification_report(y_test, y_pred, zero_division=0)
+report = classification_report(y_test, y_pred)
 print("Classification Report:\n", report)
 print("===========================================================")
