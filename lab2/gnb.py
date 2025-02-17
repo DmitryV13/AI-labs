@@ -8,7 +8,7 @@ from sklearn.naive_bayes import GaussianNB, MultinomialNB, BernoulliNB
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 
 # Загружаем датасет
-dataset = pd.read_csv('gnb1.csv')
+dataset = pd.read_csv('gnb_oner.csv')
 X = dataset[['Age', 'Salary']]
 y = dataset['Bought Iphone 14']
 

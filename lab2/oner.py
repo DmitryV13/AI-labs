@@ -6,7 +6,7 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 from matplotlib.colors import ListedColormap
 
 # Загружаем датасет
-dataset = pd.read_csv('gnb1.csv')
+dataset = pd.read_csv('gnb_oner.csv')
 X = dataset[['Age', 'Salary']]
 y = dataset['Bought Iphone 14']
 
@@ -109,48 +109,61 @@ print("Classification Report:\n", report)
 print("===========================================================")
 
 
-X_set, y_set = X_train, y_train
-X1, X2 = np.meshgrid(np.arange(start = X_set['Age'].min() - 10, stop = X_set['Age'].max() + 10, step = 0.25),
-                     np.arange(start = X_set['Salary'].min() - 1000, stop = X_set['Salary'].max() + 1000, step = 0.25))
+plt.scatter(X_train['Age'], X_train['Salary'], c=y_train, cmap=ListedColormap(('red', 'green')))
+plt.xlabel('Age')
+plt.ylabel('Salary')
 
-# Получаем предсказания для сетки
-grid_points = np.array([X1.ravel(), X2.ravel()]).T
-predictions = one_r.predict(pd.DataFrame(grid_points, columns=['Age', 'Salary']))
+# Визуализация результатов
+def plot_lines(X_set, feature_name, rules):
+    if feature_name == 'Age':  # Вертикальные линии для Age
+        for value in rules.keys():
+            plt.axvline(x=value, color='blue', linestyle='--', alpha=0.7)
+    elif feature_name == 'Salary':  # Горизонтальные линии для Salary
+        for value in rules.keys():
+            plt.axhline(y=value, color='blue', linestyle='--', alpha=0.7)
 
-# Отображаем контуры решения
-plt.contourf(X1, X2, np.array(predictions).reshape(X1.shape), alpha=0.75, cmap=ListedColormap(('red', 'green')))
-plt.xlim(X1.min(), X1.max())
-plt.ylim(X2.min(), X2.max())
+# Визуализация результатов на тренировочной выборке
+X_set, y_set = X_train.values, y_train
+y_pred_train = one_r.predict(X_train)
 
-# Отображаем обучающие точки
-for i, j in enumerate(np.unique(y_set)):
-    plt.scatter(X_set['Age'][y_set == j], X_set['Salary'][y_set == j], c=ListedColormap(('red', 'green'))(i), label=j)
+# Создаем цветовую карту
+cmap = ListedColormap(('red', 'green'))
 
-plt.title('OneR (Training set)')
+plt.figure(figsize=(8, 6))
+
+# Верно классифицированные точки
+correct_train = y_pred_train == y_set
+plt.scatter(X_set[correct_train, 0], X_set[correct_train, 1], c=y_set[correct_train], cmap=cmap, label="Correct", edgecolors='black', marker='o')
+
+# Неверно классифицированные точки
+incorrect_train = ~correct_train
+plt.scatter(X_set[incorrect_train, 0], X_set[incorrect_train, 1], c=y_set[incorrect_train], cmap=cmap, label="Incorrect", edgecolors='black', marker='x')
+
+# Рисуем линии для тренировочных данных
+plot_lines(X_set, one_r.feature, one_r.rules)
+plt.title('OneR Classifier (Training set)')
 plt.xlabel('Age')
 plt.ylabel('Salary')
 plt.legend()
 plt.show()
 
-# Визуализация результатов на тестовом наборе данных
-X_set, y_set = X_test, y_test
-X1, X2 = np.meshgrid(np.arange(start = X_set['Age'].min() - 10, stop = X_set['Age'].max() + 10, step = 0.25),
-                     np.arange(start = X_set['Salary'].min() - 1000, stop = X_set['Salary'].max() + 1000, step = 0.25))
+# Визуализация результатов на тестовой выборке
+X_set, y_set = X_test.values, y_test
+y_pred_test = one_r.predict(X_test)
 
-# Получаем предсказания для сетки
-grid_points = np.array([X1.ravel(), X2.ravel()]).T
-predictions = one_r.predict(pd.DataFrame(grid_points, columns=['Age', 'Salary']))
+plt.figure(figsize=(8, 6))
 
-# Отображаем контуры решения
-plt.contourf(X1, X2, np.array(predictions).reshape(X1.shape), alpha=0.75, cmap=ListedColormap(('red', 'green')))
-plt.xlim(X1.min(), X1.max())
-plt.ylim(X2.min(), X2.max())
+# Верно классифицированные точки
+correct_test = y_pred_test == y_set
+plt.scatter(X_set[correct_test, 0], X_set[correct_test, 1], c=y_set[correct_test], cmap=cmap, label="Correct", edgecolors='black', marker='o')
 
-# Отображаем тестовые точки
-for i, j in enumerate(np.unique(y_set)):
-    plt.scatter(X_set['Age'][y_set == j], X_set['Salary'][y_set == j], c=ListedColormap(('red', 'green'))(i), label=j)
+# Неверно классифицированные точки
+incorrect_test = ~correct_test
+plt.scatter(X_set[incorrect_test, 0], X_set[incorrect_test, 1], c=y_set[incorrect_test], cmap=cmap, label="Incorrect", edgecolors='black', marker='x')
 
-plt.title('OneR (Test set)')
+# Рисуем линии для тестовых данных
+plot_lines(X_set, one_r.feature, one_r.rules)
+plt.title('OneR Classifier (Test set)')
 plt.xlabel('Age')
 plt.ylabel('Salary')
 plt.legend()

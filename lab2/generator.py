@@ -27,4 +27,4 @@ data = pd.DataFrame({
 })
 
 # Сохранение в CSV
-data.to_csv('gnb2.csv', index=False)
+data.to_csv('test.csv', index=False)
