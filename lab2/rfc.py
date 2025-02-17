@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 
 # Загружаем датасет
@@ -44,15 +44,14 @@ print("y_test")
 print(y_test)
 print("===========================================================")
 
-# Обучаем модель Гауссового Наивного Байеса
-# Обучаем модель дерева решений
-classifier = DecisionTreeClassifier(random_state=42)
+# Обучаем модель RandomForest
+classifier = RandomForestClassifier(random_state=42)
 classifier.fit(X_train, y_train)
 
 # Делаем предсказания
 y_pred = classifier.predict(X_test)
 
-# Предсказание для человека 62 лет с зарплатой 20000 на покупку телефона
+# Предсказание для человека с параметрами Usage (minutes)=7, Notifications=6, Times Opened=4
 print("===========================================================")
 print("В каком приложении сидит человек с такими параметрами ")
 print(classifier.predict(pd.DataFrame([[7, 6, 4]], columns=['Usage (minutes)', 'Notifications', 'Times Opened'])))
@@ -72,6 +71,8 @@ print("Classification Report:\n", report)
 
 # Визуализация дерева решений
 from sklearn.tree import plot_tree
+# Выбираем одно дерево из случайного леса для визуализации
 plt.figure(figsize=(20,10))
-plot_tree(classifier, feature_names=['Usage (minutes)', 'Notifications', 'Times Opened'], class_names=list(category_mapping.keys()), filled=True)
+plot_tree(classifier.estimators_[0], feature_names=['Usage (minutes)', 'Notifications', 'Times Opened'],
+          class_names=list(category_mapping.keys()), filled=True)
 plt.show()
