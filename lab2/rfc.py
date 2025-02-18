@@ -73,6 +73,6 @@ print("Classification Report:\n", report)
 from sklearn.tree import plot_tree
 # Выбираем одно дерево из случайного леса для визуализации
 plt.figure(figsize=(20,10))
-plot_tree(classifier.estimators_[0], feature_names=['Usage (minutes)', 'Notifications', 'Times Opened'],
+plot_tree(classifier.estimators_[3], feature_names=['Usage (minutes)', 'Notifications', 'Times Opened'],
           class_names=list(category_mapping.keys()), filled=True)
 plt.show()

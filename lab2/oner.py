@@ -1,6 +1,5 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 from matplotlib.colors import ListedColormap
@@ -114,6 +113,7 @@ plt.xlabel('Age')
 plt.ylabel('Salary')
 
 # Визуализация результатов
+
 def plot_lines(X_set, feature_name, rules):
     if feature_name == 'Age':  # Вертикальные линии для Age
         for value in rules.keys():
@@ -126,7 +126,6 @@ def plot_lines(X_set, feature_name, rules):
 X_set, y_set = X_train.values, y_train
 y_pred_train = one_r.predict(X_train)
 
-# Создаем цветовую карту
 cmap = ListedColormap(('red', 'green'))
 
 plt.figure(figsize=(8, 6))

@@ -44,7 +44,6 @@ print("y_test")
 print(y_test)
 print("===========================================================")
 
-# Обучаем модель Гауссового Наивного Байеса
 # Обучаем модель дерева решений
 classifier = DecisionTreeClassifier(random_state=42)
 classifier.fit(X_train, y_train)
@@ -52,7 +51,7 @@ classifier.fit(X_train, y_train)
 # Делаем предсказания
 y_pred = classifier.predict(X_test)
 
-# Предсказание для человека 62 лет с зарплатой 20000 на покупку телефона
+# Предсказание приложения по передаваемым параметрам
 print("===========================================================")
 print("В каком приложении сидит человек с такими параметрами ")
 print(classifier.predict(pd.DataFrame([[7, 6, 4]], columns=['Usage (minutes)', 'Notifications', 'Times Opened'])))
